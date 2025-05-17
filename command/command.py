@@ -46,16 +46,16 @@ class CommandWriteToLog(ICommand):
 class CommandRepeatOnce(ICommand):
     """Команда, которая повторяет Команду, выбросившую исключение"""
 
-    def __init__(self, command: ICommand, queue: deque):
+    def __init__(self, command: ICommand, event_loop: object):
         self._command = command
-        self._queue = queue
+        self._event_loop = event_loop
 
     def execute(self):
         """Ставим команду, бросившую эксепшен в очередь"""
         print(
             f"{self.__class__.__name__}: ставим {self._command.__class__.__name__} в очередь"
         )
-        self._queue.append(self._command)
+        self._event_loop.add_command(self._command)
 
 
 class CommandRepeatTwice(ICommand):

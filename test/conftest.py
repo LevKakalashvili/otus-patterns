@@ -8,12 +8,13 @@ class FailingNtimesCommand4(Command4):
     def __init__(self, fail_count: int):
         super().__init__()
         self.fail_count = fail_count
+        self.cnt_failed = 0
 
     def execute(self):
-        if self.fail_count > 0:
-            msg = f"Создание эксепшена попытка - {self.fail_count}"
+        while self.cnt_failed < self.fail_count:
+            msg = f"Создание эксепшена попытка - {self.cnt_failed + 1}"
             print(msg)
-            self.fail_count -= 1
+            self.cnt_failed += 1
             raise Command4Exception(msg)
         super().execute()
 
