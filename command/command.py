@@ -1,5 +1,5 @@
-from interface import ICommand
-from command.exception import Command4Exception
+from interface import ICommand, IFuelSystem
+from command.exception import CommandException
 from collections import deque
 
 
@@ -72,3 +72,83 @@ class CommandRepeatTwice(ICommand):
             f"{self.__class__.__name__}: ставим {self._command.__class__.__name__} в очередь"
         )
         self._queue.append(self._command)
+
+
+class CommandMove(ICommand):
+    def __init__(self, obj: object):
+        self._obj = obj
+
+    def execute(self):
+        self._obj.move()
+
+
+class CommandRotate(ICommand):
+    def __init__(self, obj: object):
+        self._obj = obj
+
+    def execute(self):
+        self._obj.rotate()
+
+
+class CommandCheckFuel(ICommand):
+    """Команда, которая проверяет, что топлива достаточно, если нет, то выбрасывает
+    исключение CommandException"""
+
+    def __init__(self, fuel_system: IFuelSystem, required_fuel: int):
+        self._fuel_system = fuel_system
+        self._required_fuel = required_fuel
+
+    def execute(self):
+        """Проверяем топливо"""
+        if self._fuel_system.get_fuel_level() < self._required_fuel:
+            raise CommandException("Недостаточно топлива")
+
+
+class CommandBurnFuel(ICommand):
+    """Команда, которая уменьшает количество топлива на скорость расхода топлива"""
+
+    def __init__(self, fuel_system: IFuelSystem, burn_amount: int):
+        self._fuel_system = fuel_system
+        self._burn_amount = burn_amount
+
+    def execute(self):
+        """Сжигаем топливо"""
+        self._fuel_system.consume(self._burn_amount)
+
+
+class MacroCommand(ICommand):
+    """Команда, которая выполняет список команд"""
+
+    def __init__(self, commands: list[ICommand]):
+        self._commands = commands
+
+    def execute(self):
+        for cmd in self._commands:
+            cmd.execute()
+
+
+class CommandMoveWithFuel(ICommand):
+    """Команда движения по прямой с расходом топлива"""
+
+    def __init__(self, fuel_system: IFuelSystem, required_fuel: int, obj_to_move):
+        self._macro = MacroCommand(
+            [
+                CommandCheckFuel(fuel_system=fuel_system, required_fuel=required_fuel),
+                CommandMove(obj=obj_to_move),
+                CommandBurnFuel(fuel_system=fuel_system, burn_amount=required_fuel),
+            ]
+        )
+
+    def execute(self):
+        self._macro.execute()
+
+
+class ChangeVelocityCommand(ICommand):
+    """Команда модифицирует вектор мгновенной скорости, если объект находится в движении"""
+
+    def __init__(self, obj: object):
+        self._obj = obj
+
+    def execute(self):
+        if hasattr(self._obj, "is_moving") and self._obj.is_moving():
+            self._obj.adjust_velocity()

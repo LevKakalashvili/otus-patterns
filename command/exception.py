@@ -1,14 +1,18 @@
-class Command1Exception(Exception):
+class CommandException(Exception):
     pass
 
 
-class Command2Exception(Exception):
+class Command1Exception(CommandException):
     pass
 
 
-class Command3Exception(Exception):
+class Command2Exception(CommandException):
     pass
 
 
-class Command4Exception(Exception):
+class Command3Exception(CommandException):
+    pass
+
+
+class Command4Exception(CommandException):
     pass
