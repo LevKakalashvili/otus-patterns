@@ -11,6 +11,8 @@ from .command import (
     CommandMove,
     CommandRotate,
     CommandMoveWithFuel,
+    CommandChangeVelocity,
+    CommandRotateWithVelocityChange,
 )
 from .exception import (
     CommandException,
@@ -41,4 +43,6 @@ __all__ = [
     "CommandMove",
     "CommandRotate",
     "CommandMoveWithFuel",
+    "CommandChangeVelocity",
+    "CommandRotateWithVelocityChange",
 ]

@@ -27,8 +27,6 @@ class Command4(ICommand):
 
     def execute(self):
         print(f"{self.__class__.__name__}: execute")
-        # if self._raise_exception:
-        #     raise Command4Exception(f"Exception in {self.__class__.__name__}.execute method")
 
 
 class CommandWriteToLog(ICommand):
@@ -143,7 +141,7 @@ class CommandMoveWithFuel(ICommand):
         self._macro.execute()
 
 
-class ChangeVelocityCommand(ICommand):
+class CommandChangeVelocity(ICommand):
     """Команда модифицирует вектор мгновенной скорости, если объект находится в движении"""
 
     def __init__(self, obj: object):
@@ -152,3 +150,18 @@ class ChangeVelocityCommand(ICommand):
     def execute(self):
         if hasattr(self._obj, "is_moving") and self._obj.is_moving():
             self._obj.adjust_velocity()
+
+
+class CommandRotateWithVelocityChange(ICommand):
+    """Команда поворота с корректировкой вектора скорости (если объект движется)"""
+
+    def __init__(self, obj):
+        self._macro = MacroCommand(
+            [
+                CommandRotate(obj),
+                CommandChangeVelocity(obj),
+            ]
+        )
+
+    def execute(self):
+        self._macro.execute()

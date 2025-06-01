@@ -8,6 +8,8 @@ from command import (
     CommandBurnFuel,
     MacroCommand,
     CommandMoveWithFuel,
+    CommandChangeVelocity,
+    CommandRotateWithVelocityChange,
 )
 from interface import ICommand
 
@@ -141,3 +143,51 @@ def test_move_with_fuel_fails_on_low_fuel(monkeypatch):
     # Убедимся, что движение и сжигание топлива не происходили
     movable.move.assert_not_called()
     fuel_system.consume.assert_not_called()
+
+
+def test_change_velocity_when_object_is_moving():
+    obj = Mock()
+    obj.is_moving.return_value = True
+
+    command = CommandChangeVelocity(obj)
+    command.execute()
+
+    obj.is_moving.assert_called_once()
+    obj.adjust_velocity.assert_called_once()
+
+
+def test_change_velocity_when_object_is_not_moving():
+    obj = Mock()
+    obj.is_moving.return_value = False
+
+    command = CommandChangeVelocity(obj)
+    command.execute()
+
+    obj.is_moving.assert_called_once()
+    obj.adjust_velocity.assert_not_called()
+
+
+def test_rotate_and_adjust_velocity_when_moving():
+    # поворот + изменение вектора, если объект движется
+    obj = Mock()
+    obj.is_moving.return_value = True
+
+    command = CommandRotateWithVelocityChange(obj)
+    command.execute()
+
+    obj.rotate.assert_called_once()
+    obj.is_moving.assert_called_once()
+    obj.adjust_velocity.assert_called_once()
+
+
+def test_rotate_without_adjust_velocity_when_stationary():
+    # поворот происходит, а изменение вектора — нет
+    obj = Mock()
+    obj.is_moving.return_value = False
+
+    command = CommandRotateWithVelocityChange(obj)
+    command.execute()
+
+    obj.rotate.assert_called_once()
+    obj.is_moving.assert_called_once()
+    obj.adjust_velocity.assert_not_called()
