@@ -3,25 +3,25 @@ from .command import (
     Command2,
     Command3,
     Command4,
-    CommandWriteToLog,
-    CommandRepeatOnce,
-    CommandCheckFuel,
     CommandBurnFuel,
-    MacroCommand,
-    CommandMove,
-    CommandRotate,
-    CommandMoveWithFuel,
     CommandChangeVelocity,
+    CommandCheckFuel,
+    CommandMove,
+    CommandMoveWithFuel,
+    CommandRepeatOnce,
+    CommandRotate,
     CommandRotateWithVelocityChange,
+    CommandWriteToLog,
+    DummyCommand,
+    MacroCommand,
 )
 from .exception import (
-    CommandException,
-    Command4Exception,
     Command1Exception,
     Command2Exception,
     Command3Exception,
+    Command4Exception,
+    CommandException,
 )
-
 from .fuel_system import StarShipFuelSystem
 
 __all__ = [
@@ -45,4 +45,5 @@ __all__ = [
     "CommandMoveWithFuel",
     "CommandChangeVelocity",
     "CommandRotateWithVelocityChange",
+    "DummyCommand",
 ]
