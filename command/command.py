@@ -165,3 +165,12 @@ class CommandRotateWithVelocityChange(ICommand):
 
     def execute(self):
         self._macro.execute()
+
+
+class DummyCommand:
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+
+    def execute(self):
+        print(f"[DummyCommand] Executing with args={self.args}, kwargs={self.kwargs}")
