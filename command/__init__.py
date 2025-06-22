@@ -15,6 +15,8 @@ from .command import (
     DummyCommand,
     MacroCommand,
 )
+from .interpetator import InterpretCommand
+
 from .exception import (
     Command1Exception,
     Command2Exception,
@@ -46,4 +48,5 @@ __all__ = [
     "CommandChangeVelocity",
     "CommandRotateWithVelocityChange",
     "DummyCommand",
+    "InterpretCommand"
 ]
